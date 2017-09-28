@@ -152,6 +152,7 @@
         <configuration>
           <localCheckout>true</localCheckout>
           <pushChanges>false</pushChanges>
+          <arguments>-Dmaven.javadoc.skip=true</arguments>
         </configuration>
       </plugin>
     </plugins>
