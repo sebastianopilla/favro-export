@@ -17,16 +17,14 @@
 package com.datafaber;
 
 import com.datafaber.model.FavroExportStatus;
-import junit.framework.Assert;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
+import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Rule;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -39,37 +37,41 @@ public class FavroExporterIT extends TestCase {
    * This test connect to the actual Favro API using a real account
    * The account user and token are passed as environment variables to avoid committing credentials in the Git repository
    */
+  @Rule()
   public void testExport () throws Exception {
-    FavroExportStatus status = new FavroExportStatus("https://favro.com/api/v1",
-            System.getenv("FAVRO_USER"),
-            System.getenv("FAVRO_API_TOKEN"));
-    File testExportDir = new File("testExport");
-    testExportDir.mkdirs();
-    FileUtils.cleanDirectory(testExportDir);
-    FavroExporter exporter = new FavroExporter(status);
+    if (null != System.getenv("FAVRO_USER") && null != System.getenv("FAVRO_API_TOKEN")) {
 
-    // test organizations
-    exporter.exportOrganizations(testExportDir);
-    File organizationsFile = new File(testExportDir, "organizations.json");
-    Assert.assertTrue(organizationsFile.exists());
-    String content = new String(Files.readAllBytes(Paths.get(organizationsFile.toURI())));
-    JSONArray organizations = new JSONArray(content);
-    Assert.assertNotNull(organizations);
-    Assert.assertTrue(organizations.length() >= 1);
-    Assert.assertNotNull(organizations.getJSONObject(0).getString("organizationId"));
-    Assert.assertNotNull(organizations.getJSONObject(0).getString("name"));
+      FavroExportStatus status = new FavroExportStatus("https://favro.com/api/v1",
+              System.getenv("FAVRO_USER"),
+              System.getenv("FAVRO_API_TOKEN"));
+      File testExportDir = new File("target/testExport");
+      testExportDir.mkdirs();
+      FileUtils.cleanDirectory(testExportDir);
+      FavroExporter exporter = new FavroExporter(status);
 
-    // test users
-    String organizationId = organizations.getJSONObject(0).getString("organizationId");
-    exporter.exportUsers(testExportDir, organizationId);
-    File usersFile = new File(testExportDir, "users-" + organizationId + ".json");
-    Assert.assertTrue(usersFile.exists());
-    content = new String(Files.readAllBytes(Paths.get(usersFile.toURI())));
-    JSONArray users = new JSONArray(content);
-    Assert.assertNotNull(users);
-    Assert.assertTrue(users.length() >= 1);
-    Assert.assertNotNull(users.getJSONObject(0).getString("userId"));
-    Assert.assertNotNull(users.getJSONObject(0).getString("name"));
-    Assert.assertNotNull(users.getJSONObject(0).getString("email"));
+      // test organizations
+      exporter.exportOrganizations(testExportDir);
+      File organizationsFile = new File(testExportDir, "organizations.json");
+      Assert.assertTrue(organizationsFile.exists());
+      String content = new String(Files.readAllBytes(Paths.get(organizationsFile.toURI())));
+      JSONArray organizations = new JSONArray(content);
+      Assert.assertNotNull(organizations);
+      Assert.assertTrue(organizations.length() >= 1);
+      Assert.assertNotNull(organizations.getJSONObject(0).getString("organizationId"));
+      Assert.assertNotNull(organizations.getJSONObject(0).getString("name"));
+
+      // test users
+      String organizationId = organizations.getJSONObject(0).getString("organizationId");
+      exporter.exportUsers(testExportDir, organizationId);
+      File usersFile = new File(testExportDir, "users-" + organizationId + ".json");
+      Assert.assertTrue(usersFile.exists());
+      content = new String(Files.readAllBytes(Paths.get(usersFile.toURI())));
+      JSONArray users = new JSONArray(content);
+      Assert.assertNotNull(users);
+      Assert.assertTrue(users.length() >= 1);
+      Assert.assertNotNull(users.getJSONObject(0).getString("userId"));
+      Assert.assertNotNull(users.getJSONObject(0).getString("name"));
+      Assert.assertNotNull(users.getJSONObject(0).getString("email"));
+    }
   }
 }
