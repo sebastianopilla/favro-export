@@ -25,9 +25,9 @@ You need to have Java 8 installed; if you don't have it installed already, you m
 
 Then, use a text editor to prepare a file with the following contents:
 
-favro.base.url = https://favro.com/api/v1
-favro.user = _your favro username_
-favro.api.token = _your favro api token_
+    favro.base.url = https://favro.com/api/v1
+    favro.user = _your favro username_
+    favro.api.token = _your favro api token_
 
 Execute the exporter, specifying the configuration file created in the above step and a destination directory where the exported data will be written:
 
