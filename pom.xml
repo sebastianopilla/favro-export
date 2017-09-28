@@ -19,7 +19,7 @@
 
   <groupId>com.datafaber</groupId>
   <artifactId>favro-export</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>favro-export</name>
@@ -30,9 +30,9 @@
   </properties>
 
   <scm>
-    <developerConnection>scm:git:ssh://git@github.com/sebastianopilla/favro-export.git</developerConnection>
+    <developerConnection>scm:git:ssh://github.com/sebastianopilla/favro-export.git</developerConnection>
     <url>https://github.com/sebastianopilla/favro-export</url>
-    <tag>favro-export-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
