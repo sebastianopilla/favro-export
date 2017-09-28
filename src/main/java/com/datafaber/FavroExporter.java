@@ -72,7 +72,7 @@ public class FavroExporter {
     JSONArray organizations = getEntities(mStatus.getFavroBaseUrl() + "/organizations");
     if (organizations != null) {
       saveJsonToFile(pDestDir, "organizations.json", organizations);
-      mLogger.info(ctx + "exported " + organizations.length());
+      mLogger.info(ctx + "exported " + organizations.length() + " organizations");
       for (int i = 0; i < organizations.length(); i++) {
         JSONObject organization = (JSONObject)organizations.get(i);
         if (organization != null) {
