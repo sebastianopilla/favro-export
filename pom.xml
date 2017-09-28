@@ -30,7 +30,7 @@
   </properties>
 
   <scm>
-    <developerConnection>scm:git:git@github.com/sebastianopilla/favro-export.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/sebastianopilla/favro-export.git</developerConnection>
     <url>https://github.com/sebastianopilla/favro-export</url>
     <tag>favro-export-1.0.0</tag>
   </scm>
