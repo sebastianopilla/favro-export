@@ -42,6 +42,10 @@ hs_err_pid*
 src/main/resources/*.conf
 
 # IDE project files with possibly Favro credentials
-*ipr
+*.ipr
 *.iml
 *.iws
+
+# other documentation which shouldn't be on GitHub
+docs/
+
