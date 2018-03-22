@@ -362,9 +362,9 @@ public class FavroExporter {
     String ctx = "getEntities - ";
     Preconditions.checkNotNull(pUrl);
     JSONArray result = new JSONArray();
-    int pagesRemaining = 1, currentPage = 0;
+    int currentPage = 0;
     String requestId = null;
-    while (pagesRemaining > 0) {
+    while (true) {
       try {
         HttpRequest request = prepareRequest(pUrl, pOrganizationId, requestId, currentPage);
         HttpResponse<String> response = request.asString();
@@ -379,18 +379,20 @@ public class FavroExporter {
         requestId = responseJson.getString("requestId");
         currentPage = responseJson.getInt("page");
         int totalPages = responseJson.getInt("pages");
-        if (totalPages == (currentPage - 1)) {
-          // end the loop if this is the last page
-          pagesRemaining = 0;
-        }
         JSONArray entities = responseJson.getJSONArray("entities");
         if (entities != null && entities.length() > 0) {
           result = concatArrays(result, entities);
         }
+        // end the loop if this is the last page, otherwise continue (currentPage is zero-based)
+        if (totalPages == 1) {
+          break;
+        }
+        if ((currentPage + 1) == totalPages) {
+          break;
+        }
+        currentPage++;
       } catch (UnirestException ue) {
         mLogger.error(ctx + "UnirestException for request " + pUrl);
-      } finally {
-        pagesRemaining--;
       }
     }
     return result;
@@ -412,7 +414,7 @@ public class FavroExporter {
         if (!Strings.isNullOrEmpty(resetTimeStr)) {
           Date resetTime = parseDate(resetTimeStr);
           long resetTimeMsecs = resetTime.getTime();
-          return (System.currentTimeMillis() - resetTimeMsecs);
+          return Math.abs(System.currentTimeMillis() - resetTimeMsecs);
         }
       }
     }
@@ -425,10 +427,10 @@ public class FavroExporter {
    * @param pUrl url to request
    * @param pOrganizationId organization owning the entities
    * @param pRequestId request id from a previous response (needed for paginated requests)
-   * @param pCurrentPage page to request
+   * @param pRequestedPage page to request
    * @return request with headers, query string and authentication informations
    */
-  private HttpRequest prepareRequest (String pUrl, String pOrganizationId, String pRequestId, int pCurrentPage) {
+  private HttpRequest prepareRequest (String pUrl, String pOrganizationId, String pRequestId, int pRequestedPage) {
     Preconditions.checkNotNull(pUrl);
     Map<String,String> headers = new HashMap<>();
 
@@ -452,14 +454,14 @@ public class FavroExporter {
       waitForRateLimitReset(mStatus.getWaitTime());
     }
 
-    // if this is a paged request (pCurrentPage > 0), add the page and the request id to the parameters
+    // if this is a paged request (pRequestedPage > 0), add the page and the request id to the parameters
     // otherwise, just build the request
     HttpRequest request = Unirest.get(pUrl).
             headers(headers).
             basicAuth(mStatus.getFavroUser(), mStatus.getFavroApiToken());
-    if (pRequestId != null && pCurrentPage > 0) {
+    if (pRequestId != null && pRequestedPage > 0) {
       request.queryString("requestId", pRequestId);
-      request.queryString("page", String.valueOf(pCurrentPage));
+      request.queryString("page", String.valueOf(pRequestedPage));
     }
 
     return request;

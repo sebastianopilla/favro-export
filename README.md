@@ -19,7 +19,7 @@ The tool saves data into JSON files, replicating the logical structure of the en
 * the boards (widgets) in each collection, along with the columns for each board
 * all cards with task lists, task, comments and attachments
 
-### How to use:
+### Usage instructions:
 
 You need to have Java 8 installed; if you don't have it installed already, you may download the Oracle JDK from http://java.sun.com .
 
@@ -34,10 +34,6 @@ Execute the exporter, specifying the configuration file created in the above ste
     java -jar favro-exporter.jar --destination=favro-backup --configuration=favro.conf
 
 You may use either relative or absolute paths for the destination and configuration parameter (relative path are considered relative to the current directory).
-
-### Future improvements
-
-The most obvious improvement will be better testing of pagination and rate limiting in the Favro API. Feel free to open issues or to send pull requests for other improvements you may need.
 
 ### Disclaimer
 
